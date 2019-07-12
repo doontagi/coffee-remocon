@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 
 class Order(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
     created_at = models.DateTimeField(default=timezone.now)
     price = models.IntegerField()
     # pickuptime = models.IntegerField()

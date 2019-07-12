@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import os, json
+import os
+import datetime
+import json
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ROOT_DIR = os.path.dirname(BASE_DIR)
@@ -23,7 +25,7 @@ SECRET_KEY = secret_common['django']["secret_key"]
 ALLOWED_HOSTS = secret_other['django']['allowed_hosts']
 
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_CREDENTIALS = True
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.pythonanywhere.com']
 
 # Application definition
 INSTALLED_APPS = [
@@ -34,7 +36,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    'corsheaders',
     'menu',
     'order',
     'rest_framework',
@@ -44,21 +45,13 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.kakao',
-    'social_django',
     'rest_framework.authtoken',
+    'rest_framework_jwt',
+    'corsheaders',
 ]
 SITE_ID = 1
 # social-auth-app-django
-AUTHENTICATION_BACKENDS = (
-    # 'social_core.backends.open_id.OpenIdAuth',
-    # 'social_core.backends.google.GoogleOpenId',
-    # 'social_core.backends.google.GoogleOAuth2',
-    # 'social_core.backends.google.GoogleOAuth',
-    # 'social_core.backends.twitter.TwitterOAuth',
-    # 'social_core.backends.yahoo.YahooOpenId',
-    'social_core.backends.facebook.FacebookOAuth2',
-    'django.contrib.auth.backends.ModelBackend',
-)
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -102,7 +95,12 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -121,8 +119,11 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(minutes=30), # Token 만료 시간은 30분으로 설정, 30분 이내로 Refresh 해야함
+    'JWT_ALLOW_REFRESH': True, # Token Refresh 가능하도록 설정함
+}
+REST_USE_JWT = True
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
@@ -141,4 +142,3 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
-

@@ -72,7 +72,7 @@ def Pay(request):
 # csrf, POST만
 def Check(request):
     thisorder = Order.objects.get(user=request.user)
-    total_cost = thisorder.pricegf
+    total_cost = thisorder.price
     tid = thisorder.tid
     pg_token = request.GET['pg_token']
 
