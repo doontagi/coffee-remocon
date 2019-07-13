@@ -21,7 +21,7 @@ urlpatterns = [
     # path('accounts/kakao/check/', order_views.oauthLogOut),
     path('', include(router.urls)),
     path('logout/', LogoutView.as_view(), name='rest_logout'),
-    path('pay/', kakaopay.Pay, name='kakao_pay'),
-    path('check/', kakaopay.Check, name='kakao_check'),
+    path('pay', kakaopay.Pay, name='kakao_pay'),
+    path('check', kakaopay.Check, name='kakao_check'),
 ]
 
