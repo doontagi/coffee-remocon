@@ -23,5 +23,7 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='rest_logout'),
     path('pay', kakaopay.Pay, name='kakao_pay'),
     path('check', kakaopay.Check, name='kakao_check'),
+    path('cancel/', kakaopay.Cancel, name='kakao_cancel'),
+    path('fail/', kakaopay.Fail, name='kakao_fail'),
 ]
 

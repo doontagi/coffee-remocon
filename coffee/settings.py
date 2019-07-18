@@ -84,7 +84,7 @@ MIDDLEWARE = [
 ## TO BE CHANGED
 CORS_ORIGIN_WHITELIST = (
     'localhost:3000/'
-    '10.10.12.100:3000'
+    'localhost:3000'
     'https://mockup-pg-web.kakao.com'
 )
 

@@ -2,7 +2,7 @@ from order.models import Order
 from rest_framework import viewsets
 from order.serializers import OrderSerializer
 from django.shortcuts import reverse, redirect
-from django.http import HttpResponseRedirect
+from rest_framework import permissions
 # import requests
 # import json
 
@@ -18,6 +18,7 @@ class OrderViewSet(viewsets.ModelViewSet):
     # def perform_create(self, serializer):
     #         print(self.request.user.__dict__)
     #         serializer.save(creator=self.request.user)
+    permission_classes = [permissions.IsAuthenticated]
     def create(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():

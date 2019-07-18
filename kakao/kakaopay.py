@@ -1,25 +1,21 @@
-# payment/views.py
+
 import json
 from json import JSONDecodeError
 import requests
 import urllib
-
 from django.db.models import F
 from django.http import (HttpResponse, JsonResponse,
                          HttpResponseBadRequest, HttpResponseRedirect)
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 # from django.views import View
-
 from order.models import Order
 from django.contrib.auth.models import User
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from django.core import serializers
-# from menu.models import MenuModel
-# from order.models import OrderMoldel
 # from payment.models import PaymentModel
-# from restaurant.models import RestaurantModel
-# from server.collection import convert_body_to_data  ### 얘도 추상화 잘 해서 코드 줄일 방법좀...
-menus={'아메리카노':'아메리카노', '2': '카페라떼','23':'초코쉐이크'}
+# menus={'아메리카노':'아메리카노', '2': '카페라떼','23':'초코쉐이크'}
 headers = {
     'Authorization': "KakaoAK 71af8dbb8f935a60b315cede1dec6368",
     'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
@@ -28,22 +24,24 @@ headers = {
 pay_url = 'https://kapi.kakao.com/v1/payment/ready'
 check_url = 'https://kapi.kakao.com/v1/payment/approve'
 
-fail_url = 'http://10.10.12.100:8000/menu/'
-cancel_rul = 'http://10.10.12.100:8000/order/'
-
-
 @csrf_exempt
+@permission_classes([IsAuthenticated])
 def Pay(request):
-    user = request.GET.get('user')
-    userM = User.objects.get(username=user)
-    realorder = Order.objects.filter(creator=userM)
-    thisorder = realorder.get(is_paid=False)
+    try:
+        user = request.GET.get('user')
+        userM = User.objects.get(username=user)
+        realorder = Order.objects.filter(creator=userM)
+        thisorder = realorder.filter(status='a').order_by('id').last()
+
+    except User.DoesNotExist:
+        return HttpResponseRedirect('http://10.16.147.173:3000/')
     idx=[]
     idx = thisorder.order.split(",")
     total_cost = thisorder.price
     item = thisorder.order
-    amount = thisorder.price
-    approval_url = 'http://10.10.12.100:8000/check?user=' + user
+    approval_url = 'http://10.16.147.173:8000/check?user=' + user
+    cancel_url = 'http://10.16.147.173:8000/cancel?user=' + user
+    fail_url = 'http://10.16.147.173:8000/fail?user=' + user
 
     # Body
     body = {
@@ -52,12 +50,12 @@ def Pay(request):
         'partner_user_id': 'partner_user_id',
         'item_name': item,
         'quantity': 1,
-        'total_amount': amount,
-        'vat_amount': amount // 10,
+        'total_amount': total_cost,
+        'vat_amount': total_cost// 10,
         'tax_free_amount': 0,
         'approval_url': approval_url,
         'fail_url': fail_url,
-        'cancel_url': cancel_rul
+        'cancel_url': cancel_url
     }
 
     # Get response
@@ -80,11 +78,10 @@ def Check(request):
     user = request.GET.get('user')
     userM = User.objects.get(username=user)
     realorder = Order.objects.filter(creator=userM)
-    thisorder = realorder.get(is_paid=False)
+    thisorder = realorder.filter(status='a').order_by('id').last()
     total_cost = thisorder.price
     tid = thisorder.tid
     pg_token = request.GET['pg_token']
-
     body = {
         'cid': 'TC0ONETIME',
         'tid': tid,
@@ -96,7 +93,28 @@ def Check(request):
 
     res = requests.post(url=check_url, headers=headers, data=body)
     approve_data = json.loads(res.text)
-    thisorder.is_paid = True
-    thisorder.save(update_fields=["is_paid"])
+    thisorder.status = 'c'
+    thisorder.save(update_fields=["status"])
 
     return JsonResponse(approve_data)
+
+
+def Cancel(request):
+
+    user = request.GET.get('user')
+    userM = User.objects.get(username=user)
+    realorder = Order.objects.filter(creator=userM)
+    thisorder = realorder.filter(status='a').order_by('id').last()
+    thisorder.delete()
+    redirection_url =  'http://10.16.147.173:3000/menu/'
+    return HttpResponseRedirect(redirection_url)
+
+def Fail(request):
+    user = request.GET.get('user')
+    userM = User.objects.get(username=user)
+    realorder = Order.objects.filter(creator=userM)
+    thisorder = realorder.filter(status='a').order_by('id').last()
+    thisorder.delete()
+    redirection_url =  'http://10.16.147.173:3000/menu/'
+    return HttpResponseRedirect(redirection_url)
+

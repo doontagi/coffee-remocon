@@ -13,8 +13,8 @@ class Order(models.Model):
         max_length=30,
         null=True
     )
-    is_paid = models.BooleanField(default=False)
-
+    status = models.CharField(max_length=1, default='a')
+# is_paid = models.BooleanField(default=False)
 
 
 # unique_id : 아이디(string)
