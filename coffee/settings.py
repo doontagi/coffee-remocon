@@ -115,11 +115,15 @@ WSGI_APPLICATION = 'coffee.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'coffee',
-        'USER': 'root',
-        'PASSWORD' : 'gksdnf2',
-        'HOST' : 'localhost',
-        'PORT' : ''
+        'OPTIONS': {
+            'read_default_file': os.path.join(SECRET_DIR, "mysql.cnf"),
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"  # strict mode 설정 추가
+        },
+        'NAME': 'coffeeremocon',
+        'USER': 'suamzzz',
+        'PASSWORD' : 'flahzhs11',
+        'HOST' : 'coffeeremocon-db.cppwcmirktgx.us-east-2.rds.amazonaws.com',
+        'PORT' : '3306'
     }
 }
 
