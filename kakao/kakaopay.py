@@ -9,7 +9,7 @@ from django.http import (HttpResponse, JsonResponse,
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 # from django.views import View
-from order.models import Order
+from order.models import Order, Payment
 from django.contrib.auth.models import User
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -95,7 +95,6 @@ def Check(request):
     approve_data = json.loads(res.text)
     thisorder.status = 'c'
     thisorder.save(update_fields=["status"])
-
     return JsonResponse(approve_data)
 
 
@@ -117,4 +116,3 @@ def Fail(request):
     thisorder.delete()
     redirection_url =  'http://10.16.147.173:3000/menu/'
     return HttpResponseRedirect(redirection_url)
-
