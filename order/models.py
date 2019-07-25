@@ -1,10 +1,11 @@
+
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 
 
 class Order(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
     created_at = models.DateTimeField(default=timezone.now)
     price = models.IntegerField()
     # pickuptime = models.IntegerField()
@@ -13,9 +14,21 @@ class Order(models.Model):
         max_length=30,
         null=True
     )
-    is_paid = models.BooleanField(default=False)
+    status = models.CharField(max_length=1, default='a')
 
 
+class Payment(models.Model):
+
+    aid = models.CharField(max_length=100)
+    payment_method_type = models.CharField(max_length=100)
+    amount = models.CharField(max_length=100)
+#    item_code = models.CharField(max_length=100)
+    created_at = models.DateTimeField(default=timezone.now)
+    tid = models.CharField(
+        max_length=30,
+        null=True
+    )
+# is_paid = models.BooleanField(default=False)
 
 # unique_id : 아이디(string)
 # price : 총 가격(int)
