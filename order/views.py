@@ -1,4 +1,4 @@
-from order.models import Order
+from order.models import Order, Payment
 from rest_framework import viewsets
 from order.serializers import OrderSerializer, PaymentSerializer
 from django.shortcuts import reverse, redirect
@@ -33,9 +33,8 @@ class PaymentViewSet(viewsets.ModelViewSet):
 
     Additionally we also provide an extra `highlight` action.
     """
-    queryset = Order.objects.all()
+    queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
     # def perform_create(self, serializer):
     #         print(self.request.user.__dict__)
     #         serializer.save(creator=self.request.user)
-    permission_classes = [permissions.IsAuthenticated]
