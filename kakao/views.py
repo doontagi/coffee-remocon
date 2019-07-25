@@ -24,7 +24,7 @@ class KakaoLogin(SocialLoginView):
 #     url = "https://kauth.kakao.com/oauth/token"
 #     payload = "grant_type=authorization_code&" \
 #               "client_id=e9324bb26945caf079b1b63862ff7347&" \
-#               "redirect_uri=http://localhost:8000/accounts/kakao/login/callback/&" \
+#               "redirect_uri=http://192.168.0.32:8000/accounts/kakao/login/callback/&" \
 #               "code=" + code
 #     headers = {
 #         'Content-Type': "application/x-www-form-urlencoded",

@@ -21,7 +21,7 @@ class Payment(models.Model):
     aid = models.CharField(max_length=100)
     payment_method_type = models.CharField(max_length=100)
     amount = models.CharField(max_length=100)
-    item_code = models.CharField(max_length=100)
+#    item_code = models.CharField(max_length=100)
     created_at = models.DateTimeField(default=timezone.now)
     tid = models.CharField(
         max_length=30,

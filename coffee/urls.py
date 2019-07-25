@@ -12,6 +12,7 @@ from rest_auth.views import LogoutView
 router = DefaultRouter()
 router.register(r'menu', menu_views.MenuViewSet)
 router.register(r'order', order_views.OrderViewSet)
+router.register(r'payment', order_views.PaymentViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('rest-auth/kakao/', kakao_views.KakaoLogin.as_view(), name='kakao_login'),

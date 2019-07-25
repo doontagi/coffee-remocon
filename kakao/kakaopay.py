@@ -34,14 +34,14 @@ def Pay(request):
         thisorder = realorder.filter(status='a').order_by('id').last()
 
     except User.DoesNotExist:
-        return HttpResponseRedirect('http://10.16.147.173:3000/')
+        return HttpResponseRedirect('http://192.168.0.32:3000/')
     idx=[]
     idx = thisorder.order.split(",")
     total_cost = thisorder.price
     item = thisorder.order
-    approval_url = 'http://10.16.147.173:8000/check?user=' + user
-    cancel_url = 'http://10.16.147.173:8000/cancel?user=' + user
-    fail_url = 'http://10.16.147.173:8000/fail?user=' + user
+    approval_url = 'http://192.168.0.32:8000/check?user=' + user
+    cancel_url = 'http://192.168.0.32:8000/cancel?user=' + user
+    fail_url = 'http://192.168.0.32:8000/fail?user=' + user
 
     # Body
     body = {
@@ -95,7 +95,14 @@ def Check(request):
     approve_data = json.loads(res.text)
     thisorder.status = 'c'
     thisorder.save(update_fields=["status"])
-    return JsonResponse(approve_data)
+    new_payment=Payment.objects.create()
+    new_payment.aid = approve_data['aid']
+    new_payment.payment_method_type = approve_data['payment_method_type']
+    new_payment.tid = approve_data['tid']
+    new_payment.amount = approve_data['amount']['total']
+    new_payment.save()
+    return HttpResponseRedirect('http://192.168.0.32:3000/pickup/')
+
 
 
 def Cancel(request):
@@ -105,14 +112,13 @@ def Cancel(request):
     realorder = Order.objects.filter(creator=userM)
     thisorder = realorder.filter(status='a').order_by('id').last()
     thisorder.delete()
-    redirection_url =  'http://10.16.147.173:3000/menu/'
-    return HttpResponseRedirect(redirection_url)
-
+    redirection_url = 'http://localhost:3000/menu/'
+    return JsonResponse({'url': redirection_url})
 def Fail(request):
     user = request.GET.get('user')
     userM = User.objects.get(username=user)
     realorder = Order.objects.filter(creator=userM)
     thisorder = realorder.filter(status='a').order_by('id').last()
     thisorder.delete()
-    redirection_url =  'http://10.16.147.173:3000/menu/'
-    return HttpResponseRedirect(redirection_url)
+    redirection_url =  'http://localhost:3000/menu/'
+    return JsonResponse({'url': redirection_url})

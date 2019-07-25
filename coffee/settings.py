@@ -111,22 +111,12 @@ WSGI_APPLICATION = 'coffee.wsgi.application'
 # User Substitution
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'OPTIONS': {
-            'read_default_file': os.path.join(SECRET_DIR, "mysql.cnf"),
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"  # strict mode 설정 추가
-        },
-        'NAME': 'coffeeremocon',
-        'USER': 'suamzzz',
-        'PASSWORD' : 'flahzhs11',
-        'HOST' : 'coffeeremocon-db.cppwcmirktgx.us-east-2.rds.amazonaws.com',
-        'PORT' : '3306'
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
