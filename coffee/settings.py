@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import os, json
+import os, json, datetime
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ROOT_DIR = os.path.dirname(BASE_DIR)
@@ -48,17 +48,17 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
 ]
 SITE_ID = 1
-# social-auth-app-django
-AUTHENTICATION_BACKENDS = (
-    # 'social_core.backends.open_id.OpenIdAuth',
-    # 'social_core.backends.google.GoogleOpenId',
-    # 'social_core.backends.google.GoogleOAuth2',
-    # 'social_core.backends.google.GoogleOAuth',
-    # 'social_core.backends.twitter.TwitterOAuth',
-    # 'social_core.backends.yahoo.YahooOpenId',
-    'social_core.backends.facebook.FacebookOAuth2',
-    'django.contrib.auth.backends.ModelBackend',
-)
+JWT_AUTH={
+	'JWT_EXPIRATION_DELTA' : datetime.timedelta(hours=1),
+	'JWT_ALLOW_REFRESH':True,
+}
+REST_FRAMEWORK = {
+	'DEFAULT_AUTHENTICATION_CLASSES':(
+		'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+	),
+}
+REST_USE_JWT = True
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -96,17 +96,31 @@ WSGI_APPLICATION = 'coffee.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.mysql',
+#        'OPTIONS': {
+#            'read_default_file': os.path.join(SECRET_DIR, "mysql.cnf"),
+#            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"  # strict mode 설정 추가
+#        },
+#        'NAME': 'coffeeremocon2',
+#        'USER': 'suamzzz',
+#        'PASSWORD' : 'flahzhs11',
+#        'HOST' : 'coffeeremocon2.c9v6glqksa93.ap-northeast-2.rds.amazonaws.com',
+#        'PORT' : '3306'
+#    }
+#}
+
 
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
-
+DATABASES = {
+	'default':{
+		'ENGINE': 'django.db.backends.sqlite3',
+		'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+	}
+}
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',

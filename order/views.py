@@ -18,7 +18,7 @@ class OrderViewSet(viewsets.ModelViewSet):
     # def perform_create(self, serializer):
     #         print(self.request.user.__dict__)
     #         serializer.save(creator=self.request.user)
-    permission_classes = [permissions.IsAuthenticated]
+  
     def create(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
